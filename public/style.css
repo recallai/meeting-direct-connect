@@ -1,0 +1,228 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  margin: 0;
+  background-color: #f0f2f5;
+  color: #1c1e21;
+  line-height: 1.6;
+}
+.container {
+  background-color: #ffffff;
+  max-width: 1500px;
+  margin: 40px auto;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+h1,
+h2 {
+  color: #1c1e21;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 15px;
+  margin-top: 0;
+}
+h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+h2 {
+  font-size: 1.5em;
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.95em;
+  color: #33373a;
+}
+input[type="text"],
+input[type="url"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccd0d5;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1em;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+input[type="text"]:focus,
+input[type="url"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+input[type="checkbox"] {
+  margin-right: 8px;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+}
+.checkbox-label {
+  display: inline;
+  font-weight: normal;
+  vertical-align: middle;
+  color: #33373a;
+}
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: background-color 0.2s ease-in-out;
+}
+button:hover {
+  background-color: #0056b3;
+}
+button:active {
+  background-color: #004085;
+}
+.instructions,
+.api-key-notice {
+  background-color: #e9ecef;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-size: 0.9em;
+  line-height: 1.6;
+  border-left: 4px solid #007bff;
+}
+.api-key-notice code {
+  background-color: #d1d5db;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.api-key-notice strong {
+  color: #c82333;
+}
+#responseArea,
+#realTimeLog {
+  background-color: #282c34;
+  color: #abb2bf;
+  border: 1px solid #3c4048;
+  padding: 15px;
+  margin-top: 0;
+  border-radius: 6px;
+  min-height: 120px;
+  max-height: 450px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* Style for individual log entries created by JavaScript */
+#realTimeLog > div {
+  margin-bottom: 8px; /* Adds space between log lines */
+  /* Ensure text wrapping within the div if a very long single word occurs */
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+#realTimeLog > div:last-child {
+  margin-bottom: 0; /* No margin for the very last log entry */
+}
+
+.log-timestamp {
+  color: #4a90e2; /* Darker, more distinct blue for timestamp */
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.hidden {
+  display: none;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header for the Real-time Log with Scroll to Bottom button */
+.log-header {
+  margin-bottom: 10px;
+}
+
+/* Main two-column layout */
+.main-layout-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 350px;
+}
+
+.logs-column {
+  flex: 2;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Real-time event subscription section (no longer collapsible) */
+#realtimeEventsSection {
+  margin-top: 15px;
+  padding-left: 10px;
+}
+
+/* Responsive: Stack columns on smaller screens */
+@media (max-width: 900px) {
+  .main-layout-columns {
+    flex-direction: column;
+  }
+  .form-column,
+  .logs-column {
+    flex-basis: 100%;
+    min-width: auto;
+    flex: auto;
+  }
+}
+
+/* Styles for the action button (Scroll to Bottom) */
+.action-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  display: block;
+  width: fit-content;
+  margin: 15px 0 0 0;
+}
+
+#realTimeLog {
+  background-color: #282c34;
+  color: #abb2bf;
+  border: 1px solid #3c4048;
+  padding: 15px;
+  border-radius: 6px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+  min-height: 500px;
+  width: 100%;
+}

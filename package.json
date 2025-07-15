@@ -1,0 +1,37 @@
+{
+  "name": "starter_kit",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "lint": "eslint . --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@types/express": "^5.0.2",
+    "@types/express-ws": "^3.0.5",
+    "@types/node": "^22.15.23",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^9.31.0",
+    "express": "^5.1.0",
+    "globals": "^16.3.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "express-ws": "^5.0.2",
+    "ws": "^8.18.2"
+  }
+}
