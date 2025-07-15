@@ -152,7 +152,7 @@ The server console will show messages indicating that the HTTP server and the Re
 2.  **Enter Meeting Details:**
 
     For Google Meet Media API
-    - **Space Name:** Provide the Google Meet space name, this will be the last 12 letters of a Meet url https://meet.google.com/`xxx-xxxx-xxx`
+    - **Space Name:** Provide the Google Meet space name, this will be the last 12 letters of a Meet url https:&zwnj;//meet.google.com/`xxx-xxxx-xxx`
     - **Client ID** This will be the client ID you generated in your Google Cloud Project
     - **OAuth ID** Click the "Get OAuth via Login" button to generate a temporary OAuth access token
     For Zoom RTMS
