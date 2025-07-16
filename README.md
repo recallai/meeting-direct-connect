@@ -49,11 +49,11 @@ Both Zoom and Google Meet will require a static url for authentication. After ma
     - Select "Meeting" under "Product"
     - Click on "Real-time media streams notifications"
     - Enable all the real-time media streams scopes:
-        - meeting:read:audio
+        - meeting:read:meeting_audio
         - meeting:read:meeting_chat
         - meeting:read:meeting_transcript
         - meeting:read:meeting_screenshare
-        - meeting:read:video
+        - meeting:read:meeting_video
     - Click "Done"
 - Click "Local Test" under "Add your App"
     - Click "Add App Now"
@@ -76,9 +76,9 @@ Your Zoom App is now setup for RTMS :)
 - Receive media without bots!
 - Receive subscriptions for various real-time events:
   - Mixed audio from the call (`audio_mixed_raw.data`)
-  - Full and partial transcripts (`transcript.data`, `transcript.partial_data`)
   - Separate participant video (`video_separate_png.data`)
   - Separate participant audio (`audio_separate_raw.data`)
+  - **Zoom only** Full and partial transcripts (`transcript.data`, `transcript.partial_data`)
 - Real-time log display in the browser showing events received from the Recall.ai bot via WebSockets.
 
 ## Getting Started
@@ -127,12 +127,12 @@ This project uses a `.env` file to manage sensitive information and configuratio
 To receive real-time events from the Recall.ai bot, your local server's WebSocket endpoint needs to be publicly accessible. Ngrok is a great tool for this.
 
 **Start Ngrok:** Open a new terminal window and run ngrok to forward to your **Server Port** (default is `3456`, or the `PORT` you set in `.env`).
+_Change *my-random-domain.ngrok-free.app* to your ngrok static domain!_
+```bash
+ngrok http --url=my-random-domain.ngrok-free.app 3456
+```
 
-    ```bash
-    ngrok http --url=my-random-domain.ngrok-free.app 3456
-    ```
-
-    _(If you configured a different `PORT`, use that number instead of 3456.)_
+_(If you configured a different `PORT`, use that number instead of 3456.)_
 
 ### 5. Run the Application
 
@@ -151,24 +151,27 @@ The server console will show messages indicating that the HTTP server and the Re
 
 2.  **Enter Meeting Details:**
 
+    For Zoom RTMS
+    - All Zoom settings are in your .env
+    - If that's good, and your zoom app is configured correctly, all you need to do is start the meeting and this sample will auto-join!
+    
     For Google Meet Media API
     - **Space Name:** Provide the Google Meet space name, this will be the last 12 letters of a Meet url https:&zwnj;//meet.google.com/`xxx-xxxx-xxx`
     - **Client ID** This will be the client ID you generated in your Google Cloud Project
     - **OAuth ID** Click the "Get OAuth via Login" button to generate a temporary OAuth access token
-    For Zoom RTMS
-    - All Zoom settings are in your .env If that's good, all you need to do is start the meeting and this sample will auto-join the meeting!
+    
 
-4.  **Select Real-time Event Subscriptions:**
+3.  **Select Real-time Event Subscriptions:**
 
     - Check the boxes for the real-time events you want to receive (e.g., mixed audio, transcripts, separate participant video/audio).
 
-5.  **Verify Public URL:**
+4.  **Verify Public URL:**
 
     - The sample will populate the Public URL field based on the url your browser has
     - This should be your ngrok static domain, or your real public domain
     - If this is localhost, or empty, event subscriptions won't work
 
-6.  **Connect to the Meeting:**
+5.  **Connect to the Meeting:**
 
     For Google Meet Media API
     - Start a Google Meet and enter the space name
@@ -177,7 +180,7 @@ The server console will show messages indicating that the HTTP server and the Re
     For Zoom RTMS
     - If your settings are properly configured, all you need to do is start the meeting! Zoom will call the webhook you configured, which will in turn call the Recall API to connect to your meeting
 
-7.  **Observe Logs:**
+6.  **Observe Logs:**
 
     - The "Real-time Server Log" section on the web page will display:
       - Status messages from the server (e.g., API call attempts, WebSocket connections).
