@@ -165,13 +165,7 @@ The server console will show messages indicating that the HTTP server and the Re
 
     - Check the boxes for the real-time events you want to receive (e.g., mixed audio, transcripts, separate participant video/audio).
 
-4.  **Verify Public URL:**
-
-    - The sample will populate the Public URL field based on the url your browser has
-    - This should be your ngrok static domain, or your real public domain
-    - If this is localhost, or empty, event subscriptions won't work
-
-5.  **Connect to the Meeting:**
+4.  **Connect to the Meeting:**
 
     For Google Meet Media API
     - Start a Google Meet and enter the space name
@@ -180,7 +174,7 @@ The server console will show messages indicating that the HTTP server and the Re
     For Zoom RTMS
     - If your settings are properly configured, all you need to do is start the meeting! Zoom will call the webhook you configured, which will in turn call the Recall API to connect to your meeting
 
-6.  **Observe Logs:**
+5.  **Observe Logs:**
 
     - The "Real-time Server Log" section on the web page will display:
       - Status messages from the server (e.g., API call attempts, WebSocket connections).
