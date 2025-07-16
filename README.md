@@ -163,7 +163,6 @@ The server console will show messages indicating that the HTTP server and the Re
     - **Client ID** This will be the client ID you generated in your Google Cloud Project
     - **OAuth ID** Click the "Get OAuth via Login" button to generate a temporary OAuth access token
     
-
 3.  **Select Real-time Event Subscriptions:**
 
     - Check the boxes for the real-time events you want to receive (e.g., mixed audio, transcripts, separate participant video/audio).
