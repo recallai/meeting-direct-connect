@@ -407,7 +407,12 @@ app.ws("/recall-events", (ws: WebSocket, res: express.Request) => {
 // Handle 404
 app.use((req, res, next) => {
   res.status(404).send('Sorry, the page you requested could not be found.');
+  if (req.path.endsWith("favicon.ico"))
+    return;
   console.error(`404 Not Found: ${req.method} ${req.originalUrl}`);
+  if (req.method == "POST"){
+    broadcastToUIClients("Received 404 POST error, this may mean that your Zoom \"Event notification endpoint URL\" is configured for a different path! This sample expects /zoom-webhook");
+  }
 });
 
 // Start the HTTP server (which also hosts the UI WebSocket server)
