@@ -27,6 +27,7 @@ Fortunately, with Recall, if at any point you want to get around these issues yo
 Both Zoom and Google Meet will require a static url for authentication. After making an [Ngrok account](https://dashboard.ngrok.com/signup), find your [Ngrok static domain](https://dashboard.ngrok.com/domains) we will call this domain `my-random-domain.ngrok-free.app`
 
 ## Zoom RTMS Setup
+- Make sure you've updated your Zoom client to the latest version
 - Create or edit your [Zoom App](https://marketplace.zoom.us/)
 - In the top right, click Develop -> Build App
 - Select User Managed App
