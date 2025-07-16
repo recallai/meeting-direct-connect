@@ -47,14 +47,16 @@ Both Zoom and Google Meet will require a static url for authentication. After ma
             - e.g. `https://my-random-domain.ngrok-free.app/zoom-webhook`
         - Select "Save"
 - On the left, under "Build your app" select "Scopes"
-    - Select "Meeting" under "Product"
-    - Click on "Real-time media streams notifications"
-    - Enable all the real-time media streams scopes:
+    - Search "RTMS"
+    - Under "Meeting" enable all the real-time media streams scopes:
         - meeting:read:meeting_audio
         - meeting:read:meeting_chat
         - meeting:read:meeting_transcript
         - meeting:read:meeting_screenshare
         - meeting:read:meeting_video
+    - Under "RTMS" enable:
+        - rtms:read:rtms_started
+        - rtms:read:rtms:stopped
     - Click "Done"
 - Click "Local Test" under "Add your App"
     - Click "Add App Now"
