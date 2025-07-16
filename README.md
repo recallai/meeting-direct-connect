@@ -15,7 +15,7 @@ This sample demonstrates how to interact with the Recall.ai API to connect to ei
 - Breakout rooms are not supported
 - Meet Media API doesn’t send out transcriptions of the meeting, so instead of requesting [meeting_captions](https://docs.recall.ai/docs/meeting-caption-transcription) you’ll need to use one of our [Transcription Providers](https://docs.recall.ai/docs/ai-transcription)
 
-Fortunately, with Recall, if at any point you want to get around these issues you can easily switch to including a bot with one simple API :)
+Fortunately, with Recall, if at any point you want to get around these issues you can easily switch from the botless form factor of this repo to instead including a bot with one simple API :)
 
 ## Prerequisites
 - **Node.js** (v16 or higher recommended)
