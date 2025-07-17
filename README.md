@@ -2,6 +2,8 @@
 
 This sample demonstrates how to interact with the Recall.ai API to connect to either Zoom RTMS or Google Meet without a bot!
 
+![Screenshot of this sample app](/sample_screen.png)
+
 ## Zoom RTMS Limitations
 - Requires a properly configured Zoom App, which needs to go through [Zoom's application process](https://developers.zoom.us/docs/distribute/app-review-process/)
 - You can only receive data (no sending messages or [output media](https://docs.recall.ai/reference/bot_output_media_create))
@@ -24,26 +26,26 @@ Fortunately, with Recall, if at any point you want to get around these issues yo
 - **Ngrok** (or a similar tunneling service): Required to expose your local WebSocket server to the internet so Recall.ai can connect to it for real-time event delivery. You can download it from [ngrok.com](https://ngrok.com/download).
 
 ## Setup Ngrok
-Both Zoom and Google Meet will require a static url for authentication. After making an [Ngrok account](https://dashboard.ngrok.com/signup), find your [Ngrok static domain](https://dashboard.ngrok.com/domains) we will call this domain `my-random-domain.ngrok-free.app`
+Both Zoom and Google Meet will require a static url for authentication. We recommend setting up an [Ngrok static domain](https://docs.recall.ai/docs/local-webhook-development). We will call this static domain `my-random-domain.ngrok-free.app`
 
 ## Zoom RTMS Setup
 - Make sure you've updated your Zoom client to the latest version
 - Create or edit your [Zoom App](https://marketplace.zoom.us/)
 - In the top right, click Develop -> Build App
-- Select User Managed App
-- Copy your Client ID and Client Secret
+- Select General App
+- Copy your Client ID (this will be your `ZOOM_CLIENT_ID`) and Client Secret (this will be your `ZOOM_CLIENT_SECRET`)
 - Click on "Basic Information" (below "Build your app")
     - Add an OAuth Redirect URL
-    - For example, your ngrok url + /oauth-callback/zoom like `https://my-random-domain.ngrok-free.app/oauth-callback/zoom`
+    - For example, your ngrok url + `/oauth-callback/zoom` like `https://my-random-domain.ngrok-free.app/oauth-callback/zoom`
 - Click on "Access" (below "Build your app" and "Features")
-    - Copy your Secret Token
+    - Copy your Secret Token (this will be your `ZOOM_SECRET_TOKEN`)
     - Enable "Event Subscription"
         - Name the webhook (e.g. My Recall RTMS webhook)
         - Choose option "Webhook"
         - Click "Add Events"
             - Search "RTMS" and select "Select All RTMS"
         - In "Event notification endpoint URL"
-            - Add your Ngrok static domain followed by /zoom-webhook
+            - Add your Ngrok static domain followed by `/zoom-webhook`
             - e.g. `https://my-random-domain.ngrok-free.app/zoom-webhook`
         - Select "Save"
 - On the left, under "Build your app" select "Scopes"
