@@ -1,6 +1,6 @@
 # Recall.ai Meeting Direct Connect Sample for Zoom RTMS and Google Meet
 
-This sample demonstrates how to interact with the Recall.ai API to connect to either Zoom RTMS or Google Meet without a bot!
+This sample demonstrates how to interact with the [Recall.ai Meeting Direct Connect API](https://docs.recall.ai/docs/meeting-direct-connect-overview) to connect to either Zoom RTMS or Google Meet without a bot!
 
 ![Screenshot of this sample app](/sample_screen.png)
 
