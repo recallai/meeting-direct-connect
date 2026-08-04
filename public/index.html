@@ -32,6 +32,48 @@
           <div class="api-type" id="zoom-rtms">
             <h2>Zoom RTMS</h2>
             <p id="zoom-ready-status">Querying Zoom RTMS configuration...</p>
+            <div class="meeting-captions-control">
+              <div class="toggle-row">
+                <span id="meetingCaptionsLabel">Use meeting captions</span>
+                <label class="toggle-switch" for="useMeetingCaptions">
+                  <input
+                    type="checkbox"
+                    id="useMeetingCaptions"
+                    aria-labelledby="meetingCaptionsLabel"
+                  />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div id="meetingCaptionsLanguageGroup" class="form-group" hidden>
+                <label for="meetingCaptionsLanguage">Caption language:</label>
+                <select id="meetingCaptionsLanguage" name="meetingCaptionsLanguage">
+                  <option value="">Not set</option>
+                  <option value="cs">Czech</option>
+                  <option value="de">German</option>
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fil">Filipino</option>
+                  <option value="fr">French</option>
+                  <option value="he">Hebrew</option>
+                  <option value="hi">Hindi</option>
+                  <option value="it">Italian</option>
+                  <option value="ja">Japanese</option>
+                  <option value="ko">Korean</option>
+                  <option value="nl">Dutch</option>
+                  <option value="pl">Polish</option>
+                  <option value="pt">Portuguese</option>
+                  <option value="pt-BR">Portuguese (Brazil)</option>
+                  <option value="ro">Romanian</option>
+                  <option value="ru">Russian</option>
+                  <option value="sv">Swedish</option>
+                  <option value="th">Thai</option>
+                  <option value="tr">Turkish</option>
+                  <option value="uk">Ukrainian</option>
+                  <option value="vi">Vietnamese</option>
+                  <option value="zh">Chinese</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="api-type" id="meet-media" style="display: none;">
           <h2>Google Meet Media</h2>
@@ -195,12 +237,45 @@
       const zoomButton = document.getElementById('zoom-select');
       const meetMediaButton = document.getElementById('meet-select');
       const directConnectSubmit = document.getElementById('directConnectSubmit');
+      const useMeetingCaptions = document.getElementById('useMeetingCaptions');
+      const meetingCaptionsLanguage = document.getElementById('meetingCaptionsLanguage');
+      const meetingCaptionsLanguageGroup = document.getElementById('meetingCaptionsLanguageGroup');
       const toggleAutoScrollBtn = document.getElementById(
         "toggleAutoScrollBtn"
       );
       const rtEventCheckboxes = document.querySelectorAll(".rt-event-checkbox");
 
       let autoScrollEnabled = true;
+
+      async function updateMeetingCaptions() {
+        meetingCaptionsLanguageGroup.hidden = !useMeetingCaptions.checked;
+        try {
+          const response = await fetch("/set-meeting-captions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              enabled: useMeetingCaptions.checked,
+              language_code: meetingCaptionsLanguage.value,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+          }
+        } catch (error) {
+          console.error("Error updating meeting captions:", error);
+          const errorEntry = document.createElement("div");
+          errorEntry.textContent =
+            "[NETWORK ERROR] Failed to update Zoom meeting captions.";
+          realTimeLog.appendChild(errorEntry);
+        }
+      }
+
+      useMeetingCaptions.addEventListener("change", updateMeetingCaptions);
+      meetingCaptionsLanguage.addEventListener("change", updateMeetingCaptions);
+      updateMeetingCaptions();
+
       async function toggleCheck(checkbox) {
         console.log("Checkbox toggled:" + checkbox.value + " checked: " + checkbox.checked);
         try{

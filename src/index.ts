@@ -31,6 +31,14 @@ const wsInstance = expressWs(app);
 // In a real system we would likely want to store this per meeting
 const zoom_recording_config = new Set<string>();
 let zoom_websocket_url = "";
+let zoom_meeting_captions_enabled = false;
+let zoom_meeting_captions_language_code: string | undefined;
+
+const zoomMeetingCaptionLanguageCodes = new Set([
+  "cs", "de", "en", "es", "fil", "fr", "he", "hi", "it", "ja", "ko",
+  "nl", "pl", "pt", "pt-BR", "ro", "ru", "sv", "th", "tr", "uk", "vi",
+  "zh",
+]);
 
 // --- UI WebSocket Server Setup ---
 // This WebSocket server is for sending log messages from this backend to the browser UI.
@@ -108,7 +116,14 @@ app.post("/zoom-webhook", async (req: express.Request, res: express.Response) =>
         }
       };
 
-      recall_payload.recording_config = getRecordingConfigFromOptions(Array.from(zoom_recording_config), zoom_websocket_url);
+      recall_payload.recording_config = getRecordingConfigFromOptions(
+        Array.from(zoom_recording_config),
+        zoom_websocket_url,
+        {
+          enabled: zoom_meeting_captions_enabled,
+          languageCode: zoom_meeting_captions_language_code,
+        }
+      );
       const _ = await startRecallMeetingDirectConnect(recall_payload);
     }
 
@@ -123,7 +138,11 @@ function generateSignature(meetingUuid: string, streamId: string): string {
     return crypto.createHmac('sha256', clientSecret).update(message).digest('hex');
 }
 
-function getRecordingConfigFromOptions(eventsToRequest: Array<string>, wsUrl: string): object {
+function getRecordingConfigFromOptions(
+  eventsToRequest: Array<string>,
+  wsUrl: string,
+  meetingCaptions?: { enabled: boolean; languageCode?: string }
+): object {
   const recording_config: {[k: string]: any} = {};
   
   const recallWebSocketPath = wsUrl.endsWith("/") ? "recall-events" : "/recall-events";
@@ -143,12 +162,17 @@ function getRecordingConfigFromOptions(eventsToRequest: Array<string>, wsUrl: st
   if (eventsToRequest.includes("audio_mixed_raw.data")) {
     recording_config.audio_mixed_raw = {};
   }
-  if (
+  const transcriptEventRequested =
     eventsToRequest.includes("transcript.data") ||
-    eventsToRequest.includes("transcript.partial_data")
-  ) {
+    eventsToRequest.includes("transcript.partial_data");
+  // Zoom passes an explicit captions setting. Other integrations retain the
+  // existing behavior of enabling captions when transcript events are requested.
+  if (meetingCaptions?.enabled || (meetingCaptions === undefined && transcriptEventRequested)) {
+    const meeting_captions = meetingCaptions?.languageCode
+      ? { language_code: meetingCaptions.languageCode }
+      : {};
     recording_config.transcript = {
-      provider: { meeting_captions: {} },
+      provider: { meeting_captions },
     };
   }
   if (eventsToRequest.includes("video_separate_png.data")) {
@@ -241,6 +265,30 @@ const recordingConfigHandler: AsyncRequestHandler = async (req, res, next) => {
   res.status(200);
 };
 app.post("/set-recording-config", recordingConfigHandler);
+
+const meetingCaptionsHandler: AsyncRequestHandler = async (req, res) => {
+  const { enabled, language_code } = req.body;
+
+  if (typeof enabled !== "boolean") {
+    return res.status(400).json({ error: "enabled must be a boolean" });
+  }
+  if (
+    language_code !== undefined &&
+    language_code !== "" &&
+    !zoomMeetingCaptionLanguageCodes.has(language_code)
+  ) {
+    return res.status(400).json({ error: "Unsupported meeting caption language_code" });
+  }
+
+  zoom_meeting_captions_enabled = enabled;
+  zoom_meeting_captions_language_code = language_code || undefined;
+  broadcastToUIClients("Updated Zoom RTMS meeting captions:", {
+    enabled: zoom_meeting_captions_enabled,
+    language_code: zoom_meeting_captions_language_code,
+  });
+  return res.sendStatus(200);
+};
+app.post("/set-meeting-captions", meetingCaptionsHandler);
 
 const websocketUrlHandler: AsyncRequestHandler = async (req, res, next) => {
   const { websocket_url } = req.body;

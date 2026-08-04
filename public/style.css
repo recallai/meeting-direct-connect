@@ -47,6 +47,95 @@ input[type="url"] {
   font-size: 1em;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
+
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccd0d5;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-size: 1em;
+}
+
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.meeting-captions-control {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toggle-row > span {
+  font-weight: 600;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 26px;
+  margin: 0;
+}
+
+.toggle-switch input[type="checkbox"] {
+  width: 0;
+  height: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  border-radius: 26px;
+  background-color: #adb5bd;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.toggle-slider::before {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  bottom: 3px;
+  border-radius: 50%;
+  background-color: #fff;
+  content: "";
+  transition: transform 0.2s ease-in-out;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #007bff;
+}
+
+.toggle-switch input:focus-visible + .toggle-slider {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+#meetingCaptionsLanguageGroup {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
 input[type="text"]:focus,
 input[type="url"]:focus {
   border-color: #007bff;
