@@ -165,8 +165,8 @@ function getRecordingConfigFromOptions(eventsToRequest: Array<string>, wsUrl: st
         type: "websocket",
         url: wsUrl,
         events: eventsToRequest,
-            },
-          ];
+      },
+    ];
   }
   console.log("Recording config generated:", JSON.stringify(recording_config));
   return recording_config;
@@ -252,14 +252,14 @@ app.post("/set-websocket-url", websocketUrlHandler);
 
 async function startRecallMeetingDirectConnect (payload: object) {
   // This function is called to start the Recall.ai meeting direct connect process.
-  const recallApiUrl = "https://us-east-1.recall.ai/api/v1/meeting_direct_connect"; // Recall.ai endpoint to create a bot
+  const recallApiUrl = process.env.RECALL_BASE_URL + "/api/v1/meeting_direct_connect"; // Recall.ai endpoint to create a bot
   const apiKey = process.env.RECALL_API_KEY;
 
   // Prepare the payload for the Recall.ai API
 
   const payload_str = JSON.stringify(payload);
   broadcastToUIClients(
-    "Sending request to Recall.ai API (/v1/direct_meeting_connect) with payload:",
+    "Sending request to Recall.ai API (/v1/meeting_direct_connect) with payload:",
     payload_str
   );
   let response;
