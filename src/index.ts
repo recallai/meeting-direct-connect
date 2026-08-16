@@ -124,7 +124,11 @@ app.post("/zoom-webhook", async (req: express.Request, res: express.Response) =>
           languageCode: zoom_meeting_captions_language_code,
         }
       );
-      const _ = await startRecallMeetingDirectConnect(recall_payload);
+      // Sometimes Zoom will send us redundant meeting.rtms_started events
+      // for the same meeting and session. We can only get one connection
+      // so we use an idempotency key
+      const idempotencyKey = `mdc_${meeting_uuid}_${rtms_stream_id}`;
+      await startRecallMeetingDirectConnect(recall_payload, idempotencyKey);
     }
 
     res.sendStatus(200);
@@ -298,7 +302,7 @@ const websocketUrlHandler: AsyncRequestHandler = async (req, res, next) => {
 };
 app.post("/set-websocket-url", websocketUrlHandler);
 
-async function startRecallMeetingDirectConnect (payload: object) {
+async function startRecallMeetingDirectConnect (payload: object, idempotencyKey?: string) {
   // This function is called to start the Recall.ai meeting direct connect process.
   const recallApiUrl = process.env.RECALL_BASE_URL + "/api/v1/meeting_direct_connect"; // Recall.ai endpoint to create a bot
   const apiKey = process.env.RECALL_API_KEY;
@@ -316,6 +320,7 @@ async function startRecallMeetingDirectConnect (payload: object) {
     headers: {
       Authorization: `Token ${apiKey}`,
       "Content-Type": "application/json",
+      ...(idempotencyKey && { "Idempotency-Key": idempotencyKey }),
     },
   });
 } catch (error: any) {
