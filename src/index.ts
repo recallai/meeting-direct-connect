@@ -80,6 +80,13 @@ app.get("/", (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
+// Receive Recall.ai lifecycle events delivered by Svix. Acknowledge the
+// delivery before publishing it to the local logs so Svix does not retry while
+// downstream log consumers are being updated.
+app.post("/recallai-webhook", (req: express.Request, res: express.Response) => {
+  res.sendStatus(200);
+  broadcastToUIClients("Received Recall.ai webhook event:", req.body);
+});
 
 app.post("/zoom-webhook", async (req: express.Request, res: express.Response) => {
     broadcastToUIClients(
