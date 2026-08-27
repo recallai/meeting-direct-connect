@@ -40,6 +40,7 @@
                     type="checkbox"
                     id="useMeetingCaptions"
                     aria-labelledby="meetingCaptionsLabel"
+                    checked
                   />
                   <span class="toggle-slider"></span>
                 </label>
@@ -240,6 +241,10 @@
       const useMeetingCaptions = document.getElementById('useMeetingCaptions');
       const meetingCaptionsLanguage = document.getElementById('meetingCaptionsLanguage');
       const meetingCaptionsLanguageGroup = document.getElementById('meetingCaptionsLanguageGroup');
+      const transcriptEventCheckboxes = [
+        document.getElementById('event_transcript_data'),
+        document.getElementById('event_transcript_partial_data'),
+      ];
       const toggleAutoScrollBtn = document.getElementById(
         "toggleAutoScrollBtn"
       );
@@ -248,7 +253,14 @@
       let autoScrollEnabled = true;
 
       async function updateMeetingCaptions() {
-        meetingCaptionsLanguageGroup.hidden = !useMeetingCaptions.checked;
+        const captionsEnabled = useMeetingCaptions.checked;
+        meetingCaptionsLanguageGroup.hidden = !captionsEnabled;
+        transcriptEventCheckboxes.forEach((checkbox) => {
+          checkbox.disabled = !captionsEnabled;
+          if (!captionsEnabled) {
+            checkbox.checked = false;
+          }
+        });
         try {
           const response = await fetch("/set-meeting-captions", {
             method: "POST",
@@ -256,7 +268,7 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              enabled: useMeetingCaptions.checked,
+              enabled: captionsEnabled,
               language_code: meetingCaptionsLanguage.value,
             }),
           });
@@ -272,7 +284,12 @@
         }
       }
 
-      useMeetingCaptions.addEventListener("change", updateMeetingCaptions);
+      useMeetingCaptions.addEventListener("change", () => {
+        if (useMeetingCaptions.checked) {
+          transcriptEventCheckboxes[0].checked = true;
+        }
+        updateMeetingCaptions();
+      });
       meetingCaptionsLanguage.addEventListener("change", updateMeetingCaptions);
       updateMeetingCaptions();
 

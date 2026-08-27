@@ -29,10 +29,15 @@ const wsInstance = expressWs(app);
 
 // Store Zoom RTMS recording configuration globally
 // In a real system we would likely want to store this per meeting
-const zoom_recording_config = new Set<string>();
+const zoom_recording_config = new Set<string>(["transcript.data"]);
 let zoom_websocket_url = "";
-let zoom_meeting_captions_enabled = false;
+let zoom_meeting_captions_enabled = true;
 let zoom_meeting_captions_language_code: string | undefined;
+
+const transcriptRealtimeEvents = new Set([
+  "transcript.data",
+  "transcript.partial_data",
+]);
 
 const zoomMeetingCaptionLanguageCodes = new Set([
   "cs", "de", "en", "es", "fil", "fr", "he", "hi", "it", "ja", "ko",
@@ -155,6 +160,9 @@ function getRecordingConfigFromOptions(
   meetingCaptions?: { enabled: boolean; languageCode?: string }
 ): object {
   const recording_config: {[k: string]: any} = {};
+  const configuredEvents = meetingCaptions?.enabled === false
+    ? eventsToRequest.filter((event) => !transcriptRealtimeEvents.has(event))
+    : eventsToRequest;
   
   const recallWebSocketPath = wsUrl.endsWith("/") ? "recall-events" : "/recall-events";
   console.log("wsUrl:", wsUrl);
@@ -174,8 +182,8 @@ function getRecordingConfigFromOptions(
     recording_config.audio_mixed_raw = {};
   }
   const transcriptEventRequested =
-    eventsToRequest.includes("transcript.data") ||
-    eventsToRequest.includes("transcript.partial_data");
+    configuredEvents.includes("transcript.data") ||
+    configuredEvents.includes("transcript.partial_data");
   // Zoom passes an explicit captions setting. Other integrations retain the
   // existing behavior of enabling captions when transcript events are requested.
   if (meetingCaptions?.enabled || (meetingCaptions === undefined && transcriptEventRequested)) {
@@ -199,7 +207,7 @@ function getRecordingConfigFromOptions(
       {
         type: "websocket",
         url: wsUrl,
-        events: eventsToRequest,
+        events: configuredEvents,
       },
     ];
   }
@@ -262,7 +270,9 @@ app.post("/join-meet-meeting", meetMediaMediaSendBotHandler);
 
 const recordingConfigHandler: AsyncRequestHandler = async (req, res, next) => {
   const { checkbox_id, checkbox_on } = req.body;
-  if (checkbox_on){
+  const transcriptEventDisabled =
+    transcriptRealtimeEvents.has(checkbox_id) && !zoom_meeting_captions_enabled;
+  if (checkbox_on && !transcriptEventDisabled){
     console.log("Added recording config:", checkbox_id);
     zoom_recording_config.add(checkbox_id);
     broadcastToUIClients("Added:", checkbox_id)
@@ -273,7 +283,7 @@ const recordingConfigHandler: AsyncRequestHandler = async (req, res, next) => {
   }
   const configArray = Array.from(zoom_recording_config);
   broadcastToUIClients("Updated Zoom RTMS recording config:", configArray)
-  res.status(200);
+  return res.sendStatus(200);
 };
 app.post("/set-recording-config", recordingConfigHandler);
 
@@ -291,8 +301,14 @@ const meetingCaptionsHandler: AsyncRequestHandler = async (req, res) => {
     return res.status(400).json({ error: "Unsupported meeting caption language_code" });
   }
 
+  const captionsWereEnabled = zoom_meeting_captions_enabled;
   zoom_meeting_captions_enabled = enabled;
   zoom_meeting_captions_language_code = language_code || undefined;
+  if (!enabled) {
+    transcriptRealtimeEvents.forEach((event) => zoom_recording_config.delete(event));
+  } else if (!captionsWereEnabled) {
+    zoom_recording_config.add("transcript.data");
+  }
   broadcastToUIClients("Updated Zoom RTMS meeting captions:", {
     enabled: zoom_meeting_captions_enabled,
     language_code: zoom_meeting_captions_language_code,
